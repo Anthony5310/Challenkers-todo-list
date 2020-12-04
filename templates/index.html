@@ -2,9 +2,31 @@
 <html lang="fr">
   <head>
     <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+     <script src="/static/javascript/app.js"></script>
     <title>My todo-list</title>
   </head>
   <body>
-    <h1>TODO list here !</h1>
+    <div class="main-list">
+      <div class="list-title">
+        <h1>Votre to-do list</h1>
+      </div>
+      <div class="add-task">
+          <input type="text" name="task-title" id="task-title">
+          <button id="add-task-btn">Ajouter</button>
+      </div>
+      <div class="task-list">
+        {{range .List}}
+          {{if not .Done}}
+          <div class="task" id="task-{{.Id}}">
+            <p>{{.Title}}</p>
+          </div>
+          {{end}}
+        {{end}}
+      </div>
+
+    </div>
   </body>
 </html>

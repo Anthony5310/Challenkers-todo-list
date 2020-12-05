@@ -50,14 +50,14 @@ function getList(keyword){
                 <div class="task-complite"></div>\
                 <p>'+item.Name+'</p></div>\
                 <div class="finished">Terminé</div>';
-          }else {
+          }else{
             var timeStatus;
             var timeValue;
             if (item.Started == false){
               if (hrDiff < 0){
                 timeValue = "En retard";
               }else if (hrDiff < 1) {
-                timeValue = minDiff+" min";
+                timeValue = minDiff+"min";
               }else {
                 timeValue = hrDiff+'H'+minDiff;
               }
@@ -69,10 +69,10 @@ function getList(keyword){
             if (timeStatus)
             newTask += '<div class="task" id="task-'+item.Id+'">\
                 <div class="task-not-complite"></div>\
-                <p>'+item.Name+'</p></div>\
-              <div class="time-task">'+timeStatus+'</div>';
+                <p>'+item.Name+'</p></div>'+timeStatus;
           }
-          newTask += '<div class="del-task" id="task-'+item.Id+'"></div></div>'
+          newTask += '<div class="del-task" id="task-'+item.Id+'"></div>\
+          <div class="modify-task" id="task-'+item.Id+'"></div></div>'
           $(".task-list").append(newTask);
         }
       })

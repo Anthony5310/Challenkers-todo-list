@@ -17,6 +17,15 @@ body {
     transform: translate(-50%, -50%);
 }
 
+.title-list {
+  border: none;
+  color: #2980b9;
+  text-transform: uppercase;
+  font-size: 30px;
+  text-align: center;
+  margin: 10px;
+}
+
 .find {
   display: flex;
   flex-direction: column;
@@ -169,7 +178,7 @@ body {
   background-color: #bdc3c7;
 }
 
-.no-started, .started, .finished{
+.no-started, .started, .finished, .late{
   display: flex;
   align-items: center;
   font-size: 14px;
@@ -184,7 +193,11 @@ body {
   color: #bdc3c7;
 }
 
-.no-started::before, .started::before, .finished::before{
+.late {
+  color: #c0392b;
+}
+
+.no-started::before, .started::before, .finished::before, .late::before {
   content: "";
   position: relative;
   display: flex;
@@ -199,6 +212,10 @@ body {
 }
 .finished::before {
   background-image: url('../img/check-solid.svg');
+}
+.late::before {
+  background-image: url('../img/exclamation-triangle-solid.svg');
+  margin-right: 5px;
 }
 
 .modify-menu {

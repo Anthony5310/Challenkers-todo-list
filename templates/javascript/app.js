@@ -1,5 +1,7 @@
 $(document).ready(function(){
   getList(null);
+  var call = setInterval(getList, 100000);
+  console.log(call);
 
   $("#add-task-btn").click(function(){
     var taskTitle = $("#task-title").val();
@@ -10,7 +12,6 @@ $(document).ready(function(){
     if(patternTask.test(taskTitle) && patternTime.test(time)){
       var hours = time.split(":")[0];
       var minutes = time.split(":")[1];
-      console.log(hours+" "+minutes);
       $.get("/addtask", {add: taskTitle, hr: hours, min: minutes});
       getList(null);
     }
@@ -26,6 +27,7 @@ $(document).ready(function(){
 });
 
 function getList(keyword){
+  console.log("call");
   var server = "http://localhost:8080/"
   $(".task-list").empty();
   $.getJSON(server+"todolist", function(data){
@@ -60,12 +62,19 @@ function getList(keyword){
             if (item.Started == false){
               if (hrDiff < 0){
                 timeValue = "En retard";
-              }else if (hrDiff < 1) {
-                timeValue = minDiff+"min";
+                timeStatus = '<div class="late">En retard</div>';
               }else {
-                timeValue = hrDiff+'H'+minDiff;
+                minDiff = ("0"+minDiff).slice(-2);
+                if (hrDiff < 1) {
+                  timeValue = minDiff+" min";
+                }else {
+                  hrDiff = ("0"+hrDiff).slice(-2);
+                  timeValue = hrDiff+'H'+minDiff;
+                }
+                timeStatus = '<div class="no-started">'+timeValue+'</div>';
               }
-              timeStatus = '<div class="no-started">'+timeValue+'</div>';
+
+
             }else {
               timeStatus = '<div class="started">En cours</div>';
             }

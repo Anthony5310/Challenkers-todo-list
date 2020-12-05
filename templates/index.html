@@ -9,15 +9,21 @@
     <title>My todo-list</title>
   </head>
   <body>
-    <div class="main-list">
-      <div class="list-title">
-        <h1>to-do list</h1>
+    <div class="content">
+      <div class="find">
+        <input type="text" id="search-word" placeholder="Rechercher une tâche">
       </div>
-      <div class="add-task">
-          <input type="text" name="task-title" id="task-title">
-          <button id="add-task-btn">Ajouter</button>
-      </div>
-      <div class="task-list">
+      <div class="main-list">
+        <div class="list-title">
+          <h1>to-do list</h1>
+        </div>
+        <div class="add-task">
+            <input type="text" name="task-title" id="task-title" placeholder="Nouvelle tâche">
+            <input type="time" name="task-time" id="task-time" required>
+            <button id="add-task-btn">Ajouter</button>
+        </div>
+        <div class="task-list">
+        </div>
       </div>
   </body>
 </html>

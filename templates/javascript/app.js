@@ -1,39 +1,82 @@
 $(document).ready(function(){
-  getList();
+  getList(null);
 
   $("#add-task-btn").click(function(){
     var taskTitle = $("#task-title").val();
-    var patternTask = new RegExp('^[a-zA-Z0-9]{1,}.*$')
-    if(patternTask.test(taskTitle)){
-      $.get("/addtask", {add: taskTitle});
-      getList();
+    var time = $("#task-time").val();
+
+    var patternTask = new RegExp('^[a-zA-Z0-9]{1,}.*$');
+    var patternTime = new RegExp('^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$');
+    if(patternTask.test(taskTitle) && patternTime.test(time)){
+      var hours = time.split(":")[0];
+      var minutes = time.split(":")[1];
+      console.log(hours+" "+minutes);
+      $.get("/addtask", {add: taskTitle, hr: hours, min: minutes});
+      getList(null);
     }
   })
+
+  $("#search-word").change(function(){
+    getList($(this).val())
+  });
 });
 
-function getList(){
+function getList(keyword){
   var server = "http://localhost:8080/"
+  $(".task-list").empty();
   $.getJSON(server+"todolist", function(data){
-    $(".task-list").empty();
-    $.each(data, function(i, item){
-      var newTask;
-      console.log(item.Achieved+"\n");
-      if (item.Achieved == true){
-        newTask = '<div class="item-task">\
-          <div class="task achieved" id="task-'+item.Id+'">\
-            <div class="task-complite"></div>\
-            <p>'+item.Name+'</p></div>\
-          <div class="del-task" id="task-'+item.Id+'"></div></div>';
-      }else{
-        newTask = '<div class="item-task">\
-          <div class="task" id="task-'+item.Id+'">\
-            <div class="task-not-complite"></div>\
-            <p>'+item.Name+'</p></div>\
-          <div class="del-task" id="task-'+item.Id+'"></div></div>';
-      }
+    if (!data){
+      $(".task-list").append("<p>Aucune tâche en cours</p>");
+    }
+    else {
+      $.each(data, function(i, item){
+        if (keyword){
+          var patternItem = new RegExp('^.*'+keyword+'.*$');
+        }else {
+          var patternItem = new RegExp('^.*$');
+        }
+        if (patternItem.test(item.Name)){
+          var currentDate = new Date();
+          var deadline = new Date(parseInt(item.Deadline)*1000);
+          var dateDiff = new Date(deadline.getTime()-currentDate.getTime());
+          console.log(deadline +" - "+ currentDate +" = "+dateDiff);
+          hrDiff = dateDiff.getHours()-1;
+          minDiff = dateDiff.getMinutes();
+          console.log("Temps restant: "+hrDiff+"h et "+minDiff+"min");
+          var newTask;
+          newTask = '<div class="item-task">';
+          if (item.Achieved == true){
+            newTask +='<div class="task achieved" id="task-'+item.Id+'">\
+                <div class="task-complite"></div>\
+                <p>'+item.Name+'</p></div>\
+                <div class="finished">Terminé</div>';
+          }else {
+            var timeStatus;
+            var timeValue;
+            if (item.Started == false){
+              if (hrDiff < 0){
+                timeValue = "En retard";
+              }else if (hrDiff < 1) {
+                timeValue = minDiff+" min";
+              }else {
+                timeValue = hrDiff+'H'+minDiff;
+              }
+              timeStatus = '<div class="no-started">'+timeValue+'</div>';
+            }else {
+              timeStatus = '<div class="started">En cours</div>';
+            }
 
-      $(".task-list").append(newTask);
-    })
+            if (timeStatus)
+            newTask += '<div class="task" id="task-'+item.Id+'">\
+                <div class="task-not-complite"></div>\
+                <p>'+item.Name+'</p></div>\
+              <div class="time-task">'+timeStatus+'</div>';
+          }
+          newTask += '<div class="del-task" id="task-'+item.Id+'"></div></div>'
+          $(".task-list").append(newTask);
+        }
+      })
+    }
   });
 }
 
@@ -41,12 +84,12 @@ $(document).on("click", ".task", function(){
   var task = $(this).attr("id");
   var id = task.split("-")[1];
   $.get("/achievetask", {id: id});
-  getList();
+  getList(null);
 })
 
 $(document).on("click", ".del-task", function(){
   var task = $(this).attr("id");
   var id = task.split("-")[1];
   $.get("/deltask", {id: id});
-  getList();
+  getList(null);
 })

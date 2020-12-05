@@ -10,25 +10,55 @@ body {
   background-repeat: no-repeat;
 }
 
-.main-list {
-  position: absolute;
+.content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.find {
   display: flex;
   flex-direction: column;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  align-items: center;
   background-color: #FFF;
   padding: 10px;
   border-radius: 25px;
-  min-width: 500px;
+  margin: 20px 0;
   -webkit-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
     -moz-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
     box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
 }
 
+.find > input {
+  width: 80%;
+  border: none;
+  border-bottom: 1px solid #bdc3c7;
+}
+
+
+
+.main-list {
+  display: flex;
+  flex-direction: column;
+  background-color: #FFF;
+  padding: 10px;
+  border-radius: 25px;
+  margin: 20px 0;
+  -webkit-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+}
+
+
 .add-task {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
+  margin: 5px;
+}
+
+.add-task > input {
   margin: 5px;
 }
 
@@ -41,6 +71,7 @@ body {
   padding: 5px 10px;
   cursor: pointer;
 }
+
 .add-task button:hover {
   background-color: #2980b9;
   color: #ecf0f1;
@@ -64,6 +95,17 @@ body {
   font-size: 18px;
   margin: 5px;
   color: #2c3e50;
+}
+
+.task-list {
+  max-height: 500px;
+  overflow-y: scroll;
+}
+
+.task-list > p {
+  text-align: center;
+  font-size: 18px;
+  color: #95a5a6;
 }
 
 .achieved > p{
@@ -100,4 +142,36 @@ body {
   border: 2px solid #bdc3c7;
   border-radius: 50%;
   background-color: #bdc3c7;
+}
+
+.no-started, .started, .finished{
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #e67e22;
+}
+
+.started {
+  color: #27ae60;
+}
+
+.finished {
+  color: #bdc3c7;
+}
+
+.no-started::before, .started::before, .finished::before{
+  content: "";
+  position: relative;
+  display: flex;
+  width: 20px;
+  height: 20px;
+  padding-right: 5px;
+  background-image: url('../img/stopwatch-solid.svg');
+  background-repeat: no-repeat;
+}
+.started::before {
+  background-image: url('../img/hourglass-half-solid.svg');
+}
+.finished::before {
+  background-image: url('../img/check-solid.svg');
 }

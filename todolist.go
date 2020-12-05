@@ -5,6 +5,7 @@ import (
   "html/template"
 	"strconv"
   "net/http"
+	"time"
   //"fmt"
 )
 
@@ -12,6 +13,8 @@ type Task struct{
   Id int
   Name string
   Achieved bool
+	Started bool
+	Deadline int64
 }
 
 func getIndex(id int, list []Task) int {
@@ -29,17 +32,14 @@ func removeIndex(index int, list []Task) []Task{
   }else {
     return nil
   }
-
 }
 
 func main() {
-  currentId := 2
+  currentId := 0
   //Création de la liste de Task, vide par défault
   TodoList := []Task{}
-  newTask := Task{Id: 0, Name: "Dormir", Achieved: false}
-  TodoList = append(TodoList, newTask)
-  newTask = Task{Id: 1, Name: "Manger", Achieved: false}
-  TodoList = append(TodoList, newTask)
+	TodoList = nil;
+
   //Chemin des fichiers du site
   fs := http.FileServer(http.Dir("templates/"))
   http.Handle("/static/", http.StripPrefix("/static/", fs))
@@ -56,9 +56,15 @@ func main() {
   //Ajouter une tache
   http.HandleFunc("/addtask", func(w http.ResponseWriter, r *http.Request) {
     query := r.URL.Query()
-    addTask:= query.Get("add")
-    if len(addTask)>0{
-      newTask = Task{Id: currentId, Name: addTask, Achieved: false}
+    addTask := query.Get("add")
+		hrUrl := query.Get("hr")
+		minUrl := query.Get("min")
+		hr,_ := strconv.Atoi(hrUrl)
+		min,_ := strconv.Atoi(minUrl)
+		t := time.Now()
+		deadline := time.Date(t.Year(), t.Month(), t.Day(), hr, min, 0, t.Nanosecond(), t.Location()).Unix();
+		if len(addTask)>0{
+      newTask := Task{Id: currentId, Name: addTask, Achieved: false, Started: false, Deadline: deadline}
       currentId = currentId + 1
       TodoList = append(TodoList, newTask)
     }
@@ -73,9 +79,14 @@ func main() {
     if errDone == nil{
       idTask = getIndex(idTask, TodoList)
       if idTask != -1 {
-        if (TodoList[idTask].Achieved == true){
+        if (TodoList[idTask].Achieved == true && TodoList[idTask].Started == false){
           TodoList[idTask].Achieved = false
-        }else {
+        } else if (TodoList[idTask].Achieved == false && TodoList[idTask].Started == false){
+					TodoList[idTask].Started = true
+				}else if (TodoList[idTask].Achieved == true && TodoList[idTask].Started == true){
+					TodoList[idTask].Achieved = false
+					TodoList[idTask].Started = false
+				}else {
           TodoList[idTask].Achieved = true
         }
       }

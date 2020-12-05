@@ -103,8 +103,8 @@ $(document).on("click", ".modify-task", function(){
   $("#modify-menu").css("display","block");
   $(".modify-content").empty();
   var taskId = $(this).attr("id");
-  var content = '<input type=text placeholder="Renommer tâche" id="new-name">\
-  <input type=time id="new-time"><button class="btn-modify" id="'+taskId+'">Modifier</button>';
+  var content = '<p>Nouveau nom de la tâche</p><input type=text id="new-name">\
+  <p>Nouvelle deadline</p><input type=time id="new-time"><button class="btn-modify" id="'+taskId+'">Modifier</button>';
   $(".modify-content").append(content);
 })
 

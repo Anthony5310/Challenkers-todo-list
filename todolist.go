@@ -10,13 +10,14 @@ import (
 )
 
 type Task struct{
-  Id int
-  Name string
-  Achieved bool
-	Started bool
-	Deadline int64
+  Id int //Identifiant unique
+  Name string //Description de la tâche
+  Achieved bool //Tâche terminée ou non
+	Started bool //Tâche en cours ou non
+	Deadline int64 //Heure limite pour démarrer la tâche
 }
 
+//Renvoi l'indice de de la tâche correspondant à id
 func getIndex(id int, list []Task) int {
   for i, s:= range list {
     if (s.Id == id){
@@ -26,6 +27,7 @@ func getIndex(id int, list []Task) int {
   return -1;
 }
 
+//Supprime la tache selon son indice
 func removeIndex(index int, list []Task) []Task{
   if len(list) > 1 {
     return append(list[:index], list[index+1:]...)
@@ -36,7 +38,7 @@ func removeIndex(index int, list []Task) []Task{
 
 func main() {
   currentId := 0
-  //Création de la liste de Task, vide par défault
+  //Création de la liste de Task, vide par défaut
   TodoList := []Task{}
 	TodoList = nil;
 
@@ -55,30 +57,38 @@ func main() {
 
   //Ajouter une tache
   http.HandleFunc("/addtask", func(w http.ResponseWriter, r *http.Request) {
+		//Récupération des paramêtres de l'URL
     query := r.URL.Query()
     addTask := query.Get("add")
 		hrUrl := query.Get("hr")
 		minUrl := query.Get("min")
+		//Conversion de l'URL (string) en entier (int)
 		hr,_ := strconv.Atoi(hrUrl)
 		min,_ := strconv.Atoi(minUrl)
+		//Conversion de l'heure et de la minute en timestamp unix à partir de la date actuelle
 		t := time.Now()
 		deadline := time.Date(t.Year(), t.Month(), t.Day(), hr, min, 0, t.Nanosecond(), t.Location()).Unix();
 		if len(addTask)>0{
+			//Création et ajout de la nouvelle tache
       newTask := Task{Id: currentId, Name: addTask, Achieved: false, Started: false, Deadline: deadline}
       currentId = currentId + 1
       TodoList = append(TodoList, newTask)
     }
+		//Encodage du json
     json.NewEncoder(w).Encode(TodoList)
   })
 
   //Accomplir une tache
   http.HandleFunc("/achievetask", func(w http.ResponseWriter, r *http.Request) {
+		//Récupération des paramêtres de l'URL
     query := r.URL.Query()
     achieveTask:= query.Get("id")
+		//Conversion de l'URL (string) en entier (int)
     idTask, errDone := strconv.Atoi(achieveTask)
     if errDone == nil{
       idTask = getIndex(idTask, TodoList)
       if idTask != -1 {
+				//Machine à état
         if (TodoList[idTask].Achieved == true && TodoList[idTask].Started == false){
           TodoList[idTask].Achieved = false
         } else if (TodoList[idTask].Achieved == false && TodoList[idTask].Started == false){
@@ -96,8 +106,10 @@ func main() {
 
   //Supprimer une tache
   http.HandleFunc("/deltask", func(w http.ResponseWriter, r *http.Request) {
+		//Récupération des paramêtres de l'URL
     query := r.URL.Query()
     delTask:= query.Get("id")
+		//Conversion de l'URL (string) en entier (int)
     idTask, errDone := strconv.Atoi(delTask)
     if errDone == nil{
       index := getIndex(idTask, TodoList);
@@ -110,6 +122,7 @@ func main() {
 
 	//Modifier une tache
   http.HandleFunc("/modify", func(w http.ResponseWriter, r *http.Request) {
+		//Récupération des paramêtres de l'URL et Conversion de l'URL (string) en entier (int)
     query := r.URL.Query()
 		idUrl:= query.Get("id")
 		idTask,_ := strconv.Atoi(idUrl)

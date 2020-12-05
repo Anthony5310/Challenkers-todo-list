@@ -43,7 +43,6 @@ function getList(keyword){
           var currentDate = new Date();
           var deadline = new Date(parseInt(item.Deadline)*1000);
           var dateDiff = deadline.getTime()-currentDate.getTime();
-          hrDiff = 0;
           tmp = Math.floor(dateDiff/1000/60);
           minDiff = tmp % 60;
           tmp = Math.floor(dateDiff/1000/60/60);

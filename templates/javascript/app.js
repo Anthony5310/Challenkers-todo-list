@@ -42,11 +42,12 @@ function getList(keyword){
         if (patternItem.test(item.Name)){
           var currentDate = new Date();
           var deadline = new Date(parseInt(item.Deadline)*1000);
-          var dateDiff = new Date(deadline.getTime()-currentDate.getTime());
-          console.log(deadline +" - "+ currentDate +" = "+dateDiff);
-          hrDiff = dateDiff.getHours()-1;
-          minDiff = dateDiff.getMinutes();
-          console.log("Temps restant: "+hrDiff+"h et "+minDiff+"min");
+          var dateDiff = deadline.getTime()-currentDate.getTime();
+          hrDiff = 0;
+          tmp = Math.floor(dateDiff/1000/60);
+          minDiff = tmp % 60;
+          tmp = Math.floor(dateDiff/1000/60/60);
+          hrDiff = tmp % 24;
           var newTask;
           newTask = '<div class="item-task">';
           if (item.Achieved == true){

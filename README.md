@@ -18,4 +18,4 @@ Fonctionnalités:
   Possibilité de rechercher une tâche dans la barre de recherche.
 
 Implémentation:
-  En ce qui concerne l'implémentation, le programme todolist.go stocke la liste de tâche et écoute sur l'adresse localhost:8080. Elle récupère les requêtes http générées en jQuery afin de réaliser les différentes actions. A chaque action, le serveur traite l'information, met à jour la liste et encode la liste sous un format json accessible à l'adresse http://localhost:8080/todolist qui sera ensuite récupérée via une requête AJAX afin de mettre à jour la view.
+  En ce qui concerne l'implémentation, le programme todolist.go stocke la liste de tâches et écoute sur l'adresse localhost:8080. Elle récupère les requêtes http générées en jQuery afin de réaliser les différentes actions. A chaque action, le serveur traite l'information, met à jour la liste et encode la liste sous un format json accessible à l'adresse http://localhost:8080/todolist qui sera ensuite récupérée via une requête AJAX afin de mettre à jour la view.

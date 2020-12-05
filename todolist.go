@@ -107,5 +107,25 @@ func main() {
     }
     json.NewEncoder(w).Encode(TodoList)
   })
+
+	//Modifier une tache
+  http.HandleFunc("/modify", func(w http.ResponseWriter, r *http.Request) {
+    query := r.URL.Query()
+		idUrl:= query.Get("id")
+		idTask,_ := strconv.Atoi(idUrl)
+    newName:= query.Get("name")
+		hrUrl := query.Get("hr")
+		minUrl := query.Get("min")
+		hr,_ := strconv.Atoi(hrUrl)
+		min,_ := strconv.Atoi(minUrl)
+		t := time.Now()
+		deadline := time.Date(t.Year(), t.Month(), t.Day(), hr, min, 0, t.Nanosecond(), t.Location()).Unix();
+		if (len(newName) > 0){
+			index := getIndex(idTask, TodoList);
+			TodoList[index].Name = newName
+			TodoList[index].Deadline = deadline
+		}
+		json.NewEncoder(w).Encode(TodoList)
+  })
   http.ListenAndServe(":8080", nil)
 }

@@ -19,6 +19,10 @@ $(document).ready(function(){
   $("#search-word").change(function(){
     getList($(this).val())
   });
+
+  $(".quit-menu").click(function(){
+    $("#modify-menu").css("display", "none");
+  })
 });
 
 function getList(keyword){
@@ -71,8 +75,9 @@ function getList(keyword){
                 <div class="task-not-complite"></div>\
                 <p>'+item.Name+'</p></div>'+timeStatus;
           }
-          newTask += '<div class="del-task" id="task-'+item.Id+'"></div>\
-          <div class="modify-task" id="task-'+item.Id+'"></div></div>'
+          newTask += '<div class="options"><div class="modify-task" id="task-'+item.Id+'"></div>\
+          <div class="del-task" id="task-'+item.Id+'"></div>\
+          </div></div>'
           $(".task-list").append(newTask);
         }
       })
@@ -93,3 +98,30 @@ $(document).on("click", ".del-task", function(){
   $.get("/deltask", {id: id});
   getList(null);
 })
+
+$(document).on("click", ".modify-task", function(){
+  $("#modify-menu").css("display","block");
+  $(".modify-content").empty();
+  var taskId = $(this).attr("id");
+  var content = '<input type=text placeholder="Renommer tâche" id="new-name">\
+  <input type=time id="new-time"><button class="btn-modify" id="'+taskId+'">Modifier</button>';
+  $(".modify-content").append(content);
+})
+
+$(document).on("click", ".btn-modify", function(){
+  //alert($(this).attr("id"));
+  var task = $(this).attr("id");
+  var id = task.split("-")[1];
+  var taskTitle = $("#new-name").val();
+  var time = $("#new-time").val();
+  var patternTask = new RegExp('^[a-zA-Z0-9]{1,}.*$');
+  var patternTime = new RegExp('^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$');
+  if(patternTask.test(taskTitle) && patternTime.test(time)){
+    var hours = time.split(":")[0];
+    var minutes = time.split(":")[1];
+    console.log(hours+" "+minutes);
+    $.get("/modify", {id: id, name: taskTitle, hr: hours, min: minutes});
+    getList(null);
+    $("#modify-menu").css("display","none");
+  }
+});
